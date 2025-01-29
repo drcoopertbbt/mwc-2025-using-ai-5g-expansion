@@ -91,9 +91,24 @@ def generate_ai_response(prompt, context):
             raise Exception("NVIDIA_API_KEY environment variable is not set")
         base_url = "https://integrate.api.nvidia.com/v1"
         
-        system_message = """You are a helpful customer support AI assistant. Use the provided context 
-        to answer questions professionally and accurately. If the context doesn't contain relevant information, 
-        politely explain that and offer to help with related topics."""
+        system_message = """You are a helpful customer support AI assistant with analytical capabilities. 
+        When responding to queries:
+        1. Use the provided context to answer questions professionally and accurately
+        2. Analyze patterns and trends in the data when relevant
+        3. Identify common themes or recurring issues
+        4. Conclude responses with a brief summary section that highlights:
+           - Key patterns or trends identified
+           - Notable insights
+           - Potential areas for improvement
+           - Recommendations based on the analysis
+        
+        If the context doesn't contain relevant information, politely explain that and offer to help with related topics.
+        
+        Format your responses using Markdown for better readability, including:
+        - Headers for different sections
+        - Lists for multiple points
+        - Bold/italic for emphasis
+        - Code blocks for technical details"""
         
         headers = {
             "Content-Type": "application/json",
@@ -198,12 +213,31 @@ def ask():
                 
                 response = generate_ai_response(prompt_data, context)
                 collected_messages = []
+                buffer = []
                 
                 chunk_count = 0
                 total_chars = 0
                 print("Streaming response from NVIDIA API...")
                 sys.stdout.flush()
                 start_time = datetime.now()
+
+                # Configure markdown with all necessary extensions
+                md = markdown.Markdown(
+                    extensions=[
+                        'markdown.extensions.extra',
+                        'markdown.extensions.codehilite',
+                        'markdown.extensions.fenced_code',
+                        'markdown.extensions.tables',
+                        'markdown.extensions.toc'
+                    ],
+                    extension_configs={
+                        'markdown.extensions.codehilite': {
+                            'css_class': 'highlight',
+                            'use_pygments': True,
+                            'noclasses': False
+                        }
+                    }
+                )
                 
                 for line in response.iter_lines():
                     if line:
@@ -216,10 +250,32 @@ def ask():
                                     chunk_count += 1
                                     total_chars += len(message)
                                     collected_messages.append(message)
+                                    buffer.append(message)
+                                    
+                                    # Join the buffer to check for complete markdown blocks
+                                    current_text = ''.join(buffer)
+                                    
+                                    # Check for complete markdown blocks
+                                    if (
+                                        '\n\n' in message or
+                                        message.strip().endswith('```') or
+                                        message.rstrip().endswith('.') or
+                                        message.strip().endswith('---') or
+                                        message.strip().endswith(')') or
+                                        len(buffer) > 50  # Flush buffer if it gets too large
+                                    ):
+                                        # Convert accumulated text to HTML
+                                        html_content = md.convert(current_text)
+                                        buffer = []  # Clear buffer after conversion
+                                        
+                                        # Reset markdown instance for next conversion
+                                        md.reset()
+                                        
+                                        yield f"data: {json.dumps({'content': html_content})}\n\n"
+                                    
                                     if chunk_count % 10 == 0:  # Log every 10th chunk
                                         print(f"Received {chunk_count} chunks ({total_chars} chars)")
                                         sys.stdout.flush()
-                                    yield f"data: {json.dumps({'content': message})}\n\n"
                             except json.JSONDecodeError:
                                 continue
                 

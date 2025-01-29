@@ -2,6 +2,8 @@
 
 A RAG-enabled customer support system that uses a knowledge base to provide context-aware responses to customer queries.
 
+![alt text](image.png)
+
 ## Project Structure
 
 ```
