@@ -1,0 +1,39 @@
+{
+  "articles": [
+    {
+      "id": "net-001",
+      "title": "Network Connectivity Issues",
+      "content": "Common solutions for network connectivity problems:\n1. Check if your router is powered on and connected\n2. Verify your network cables are properly connected\n3. Try restarting your modem and router\n4. Ensure your WiFi is enabled on your device\n5. Contact your ISP if issues persist",
+      "category": "networking",
+      "tags": ["connectivity", "internet", "troubleshooting"]
+    },
+    {
+      "id": "bill-001",
+      "title": "Billing and Payments",
+      "content": "Information about billing cycles and payment methods:\n- Monthly billing cycle starts on the 1st\n- We accept credit cards, PayPal, and bank transfers\n- Late payments incur a 5% fee\n- Contact billing@example.com for invoice questions\n- Early termination fee may apply",
+      "category": "billing",
+      "tags": ["payments", "invoices", "fees"]
+    },
+    {
+      "id": "acc-001",
+      "title": "Account Management",
+      "content": "How to manage your account settings:\n1. Log in to your dashboard at account.example.com\n2. Click on 'Settings' in the top right\n3. Update your profile information\n4. Change password or enable 2FA\n5. Manage notification preferences",
+      "category": "account",
+      "tags": ["settings", "profile", "security"]
+    },
+    {
+      "id": "prod-001",
+      "title": "Product Features",
+      "content": "Overview of our main product features:\n- Real-time data synchronization\n- Cloud backup and storage\n- Multi-device support\n- Advanced security features\n- 24/7 system monitoring",
+      "category": "product",
+      "tags": ["features", "overview", "capabilities"]
+    },
+    {
+      "id": "tech-001",
+      "title": "Technical Requirements",
+      "content": "System requirements for optimal performance:\n- Minimum 8GB RAM\n- 100GB free disk space\n- Modern web browser (Chrome, Firefox, Safari)\n- Stable internet connection (10Mbps+)\n- Operating System: Windows 10+, macOS 10.15+, or Ubuntu 20.04+",
+      "category": "technical",
+      "tags": ["requirements", "specs", "compatibility"]
+    }
+  ]
+}
