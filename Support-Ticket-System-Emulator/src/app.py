@@ -1,31 +1,162 @@
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify, render_template, Response, stream_with_context
 from flask_cors import CORS
 import json
 import os
 import markdown
 from datetime import datetime
 import re
+from openai import OpenAI
+from dotenv import load_dotenv
+import logging
+import traceback
+import sys
+import requests
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+
+# Ensure all loggers are set to DEBUG
+logging.getLogger('werkzeug').setLevel(logging.DEBUG)
+logging.getLogger('openai').setLevel(logging.DEBUG)
+logger = logging.getLogger(__name__)
+
+# Force immediate flush of logging
+sys.stdout.flush()
+sys.stderr.flush()
+
+print("=== Support Ticket System Starting ===")
+print("Logging Level: DEBUG")
+print("Console Output: Enabled")
+print("================================")
+
+# Load environment variables
+load_dotenv()
+logger.info("Environment variables loaded")
+print("API Key loaded from .env file")
 
 def load_knowledge_base():
     kb_path = os.path.join(os.path.dirname(__file__), 'data/knowledge_base/support_articles.json')
     with open(kb_path, 'r') as f:
         return json.load(f)
 
-def search_knowledge_base(query, kb_data):
-    query = query.lower()
-    relevant_articles = []
-    
-    for article in kb_data['articles']:
-        # Check title, content, and tags for matches
-        if (query in article['title'].lower() or 
-            query in article['content'].lower() or 
-            query in ' '.join(article['tags']).lower() or
-            query in article['category'].lower()):
-            relevant_articles.append(article)
-    
-    return relevant_articles
+class APILogger:
+    @staticmethod
+    def log_auth_attempt(api_key):
+        logger.info("=== NVIDIA API Authentication ===")
+        logger.info(f"Timestamp: {datetime.now().isoformat()}")
+        logger.info(f"API Key Format: nvapi-{api_key[:4]}...{api_key[-4:]}")
+        logger.info("Auth Method: Bearer Token")
+        logger.info("Auth Scope: chat.completions")
+        logger.info("==============================")
 
-app = Flask(__name__)
+    @staticmethod
+    def log_request_start(api_key, url):
+        logger.info("=== NVIDIA API Request Start ===")
+        logger.info(f"Timestamp: {datetime.now().isoformat()}")
+        logger.info(f"Request ID: {datetime.now().strftime('%Y%m%d%H%M%S')}")
+        logger.info(f"Endpoint: {url}")
+        logger.info("=== Request Headers ===")
+        logger.info("Content-Type: application/json")
+        logger.info("Authorization: Bearer nvapi-***")
+        logger.info("Accept: application/json")
+        logger.info("User-Agent: MWC-Support-Ticket-System/1.0")
+        logger.info("Connection: keep-alive")
+        logger.info("========================")
+
+    @staticmethod
+    def log_request_end(response_status, duration=None):
+        logger.info("=== NVIDIA API Response ===")
+        logger.info(f"Status: {response_status}")
+        if duration:
+            logger.info(f"Response Time: {duration:.2f}s")
+        logger.info("=== Response Headers ===")
+        logger.info("Content-Type: application/json")
+        logger.info("X-Request-ID: Present")
+        logger.info("X-RateLimit-Limit: Standard")
+        logger.info("X-RateLimit-Remaining: Tracked")
+        logger.info("=========================")
+
+def generate_ai_response(prompt, context):
+    try:
+        print("\n=== NVIDIA API Chat Request ===")
+        
+        api_key = os.getenv('NVIDIA_API_KEY')
+        if not api_key:
+            raise Exception("NVIDIA_API_KEY environment variable is not set")
+        base_url = "https://integrate.api.nvidia.com/v1"
+        
+        system_message = """You are a helpful customer support AI assistant. Use the provided context 
+        to answer questions professionally and accurately. If the context doesn't contain relevant information, 
+        politely explain that and offer to help with related topics."""
+        
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}"
+        }
+        
+        data = {
+            "model": "meta/llama-3.3-70b-instruct",
+            "messages": [
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": f"Context:\n{context}\n\nQuery: {prompt}"}
+            ],
+            "temperature": 0.2,
+            "top_p": 0.7,
+            "max_tokens": 1024,
+            "stream": True
+        }
+        
+        print(f"\nTimestamp: {datetime.now().isoformat()}")
+        print("\nRequest Configuration:")
+        print("- Model: meta/llama-3.3-70b-instruct")
+        print("- Temperature: 0.2")
+        print("- Top_p: 0.7")
+        print("- Max tokens: 1024")
+        print("- Stream: enabled")
+        print("\nMessage Details:")
+        print(f"- System message: {len(system_message)} chars")
+        print(f"- Context: {len(context)} chars")
+        print(f"- User query: {len(prompt)} chars")
+        print("\nAPI Endpoint: /chat/completions")
+        print("Request Method: POST")
+        sys.stdout.flush()
+        
+        print("\nSending request to NVIDIA API...")
+        sys.stdout.flush()
+        
+        response = requests.post(
+            f"{base_url}/chat/completions",
+            headers=headers,
+            json=data,
+            stream=True
+        )
+        
+        if response.status_code != 200:
+            error_msg = f"API request failed with status {response.status_code}: {response.text}"
+            logger.error(error_msg)
+            raise Exception(error_msg)
+            
+        print("Request accepted by API")
+        print("Initializing streaming response...")
+        print("Content-Type: text/event-stream")
+        print("Transfer-Encoding: chunked")
+        print("================================")
+        sys.stdout.flush()
+        
+        return response
+        
+    except Exception as e:
+        logger.error(f"Error generating AI response: {str(e)}")
+        logger.error(traceback.format_exc())
+        raise
+
+app = Flask(__name__, static_url_path='/static', static_folder='static')
 CORS(app)
 
 # Create local data directories for testing
@@ -37,133 +168,101 @@ os.makedirs(os.path.join(data_dir, 'rag-database'), exist_ok=True)
 
 @app.route('/ask', methods=['POST'])
 def ask():
-    # Extract prompt from the incoming request
-    prompt_data = request.json.get('prompt', '')
-    
-    # Create a more focused customer support prompt
-    enhanced_prompt = f"""As a customer support AI assistant, please help with the following query. 
-    Use a professional and helpful tone. If you need more information, politely ask for it.
-    
-    Customer Query: {prompt_data}
-    """
-
-    # Save the prompt
-    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    prompt_path = os.path.join(data_dir, 'prompts', f'prompt_{timestamp}.json')
-    with open(prompt_path, 'w') as f:
-        json.dump({'prompt': prompt_data, 'enhanced_prompt': enhanced_prompt}, f, indent=2)
-
-    # Load and search knowledge base
-    kb_data = load_knowledge_base()
-    relevant_articles = search_knowledge_base(prompt_data.lower(), kb_data)
-    
-    # Create context from relevant articles
-    context = ""
-    if relevant_articles:
-        context = "Based on our knowledge base:\n\n"
-        for article in relevant_articles:
-            context += f"## {article['title']}\n{article['content']}\n\n"
-    else:
-        context = "No directly relevant articles found in our knowledge base. Providing a general response.\n\n"
-    
-    # Create response with knowledge base context
-    response_body = {
-        "choices": [{
-            "message": {
-                "content": f"Here's what I found to help with your query about '{prompt_data}':\n\n{context}\n\nIs there anything specific from this information you'd like me to clarify?"
-            }
-        }]
-    }
-
-    # Save the response
-    response_path = os.path.join(data_dir, 'responses', f'response_{timestamp}.json')
-    with open(response_path, 'w') as f:
-        json.dump(response_body, f, indent=2)
-
-    # Extract and format the response for RAG
     try:
-        message_content = response_body['choices'][0]['message']['content']
+        print("\n=== New Request Received ===")
+        logger.info("Received /ask request")
+        sys.stdout.flush()
         
-        # Save to RAG database
-        rag_entry = {
-            'query': prompt_data,
-            'response': message_content,
-            'timestamp': timestamp
-        }
-        rag_path = os.path.join(data_dir, 'rag-database', f'entry_{timestamp}.json')
-        with open(rag_path, 'w') as f:
-            json.dump(rag_entry, f, indent=2)
-
-        # Convert to HTML for display
-        html_content = markdown.markdown(message_content)
+        # Extract prompt from the incoming request
+        prompt_data = request.json.get('prompt', '')
+        logger.info(f"Processing prompt: {prompt_data}")
+        print(f"User Query: {prompt_data}")
+        sys.stdout.flush()
         
-        return jsonify({
-            'response': message_content,
-            'html': html_content,
-            'timestamp': timestamp
-        })
+        # Save the prompt
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        prompt_path = os.path.join(data_dir, 'prompts', f'prompt_{timestamp}.json')
+        with open(prompt_path, 'w') as f:
+            json.dump({'prompt': prompt_data}, f, indent=2)
 
-    except KeyError:
-        return jsonify({
-            'error': 'Invalid response format',
-            'raw_response': response_body
-        }), 500
+        # Load entire knowledge base as context
+        kb_data = load_knowledge_base()
+        context = "Here is our complete knowledge base:\n\n" + json.dumps(kb_data, indent=2)
+            
+        logger.info("Context prepared, initiating response generation")
+
+        def generate():
+            try:
+                print("\n=== Starting API Interaction ===")
+                sys.stdout.flush()
+                
+                response = generate_ai_response(prompt_data, context)
+                collected_messages = []
+                
+                chunk_count = 0
+                total_chars = 0
+                print("Streaming response from NVIDIA API...")
+                sys.stdout.flush()
+                start_time = datetime.now()
+                
+                for line in response.iter_lines():
+                    if line:
+                        line = line.decode('utf-8')
+                        if line.startswith('data: '):
+                            try:
+                                content = json.loads(line[6:])
+                                if content.get('choices') and content['choices'][0].get('delta', {}).get('content'):
+                                    message = content['choices'][0]['delta']['content']
+                                    chunk_count += 1
+                                    total_chars += len(message)
+                                    collected_messages.append(message)
+                                    if chunk_count % 10 == 0:  # Log every 10th chunk
+                                        print(f"Received {chunk_count} chunks ({total_chars} chars)")
+                                        sys.stdout.flush()
+                                    yield f"data: {json.dumps({'content': message})}\n\n"
+                            except json.JSONDecodeError:
+                                continue
+                
+                end_time = datetime.now()
+                duration = (end_time - start_time).total_seconds()
+                logger.info("=== Streaming Complete ===")
+                logger.info(f"Total chunks: {chunk_count}")
+                logger.info(f"Total characters: {total_chars}")
+                logger.info(f"Duration: {duration:.2f} seconds")
+                logger.info(f"Average speed: {total_chars/duration:.2f} chars/second")
+                logger.info("========================")
+                
+                # Save the complete response
+                full_response = ''.join(collected_messages)
+                response_path = os.path.join(data_dir, 'responses', f'response_{timestamp}.json')
+                with open(response_path, 'w') as f:
+                    json.dump({'response': full_response}, f, indent=2)
+                
+                # Save to RAG database
+                rag_entry = {
+                    'query': prompt_data,
+                    'response': full_response,
+                    'timestamp': timestamp
+                }
+                rag_path = os.path.join(data_dir, 'rag-database', f'entry_{timestamp}.json')
+                with open(rag_path, 'w') as f:
+                    json.dump(rag_entry, f, indent=2)
+                
+            except Exception as e:
+                logger.error(f"Error in generate(): {str(e)}")
+                logger.error(traceback.format_exc())
+                yield f"data: {json.dumps({'error': str(e)})}\n\n"
+        
+        return Response(stream_with_context(generate()), mimetype='text/event-stream')
+        
+    except Exception as e:
+        logger.error(f"Error in /ask route: {str(e)}")
+        logger.error(traceback.format_exc())
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/')
 def home():
-    template = """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Customer Support AI Assistant</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <style>
-            .chat-container { max-width: 800px; margin: auto; }
-            .response { white-space: pre-wrap; }
-        </style>
-    </head>
-    <body>
-        <div class="container mt-5 chat-container">
-            <h1 class="mb-4">Customer Support AI Assistant</h1>
-            <div class="mb-3">
-                <textarea id="prompt" class="form-control" rows="4" placeholder="Enter your support query here..."></textarea>
-            </div>
-            <button onclick="submitQuery()" class="btn btn-primary mb-4">Submit Query</button>
-            <div id="response" class="response border rounded p-3 bg-light"></div>
-        </div>
-
-        <script>
-        async function submitQuery() {
-            const prompt = document.getElementById('prompt').value;
-            const responseDiv = document.getElementById('response');
-            
-            responseDiv.innerHTML = 'Processing...';
-            
-            try {
-                const response = await fetch('/ask', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ prompt })
-                });
-                
-                const data = await response.json();
-                
-                if (data.html) {
-                    responseDiv.innerHTML = data.html;
-                } else if (data.error) {
-                    responseDiv.innerHTML = `Error: ${data.error}`;
-                }
-            } catch (error) {
-                responseDiv.innerHTML = `Error: ${error.message}`;
-            }
-        }
-        </script>
-    </body>
-    </html>
-    """
-    return render_template_string(template)
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)

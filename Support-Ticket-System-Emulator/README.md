@@ -21,7 +21,7 @@ Support-Ticket-System-Emulator/
 1. Create and activate a virtual environment:
 ```bash
 python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate
 ```
 
 2. Install dependencies:
@@ -78,3 +78,10 @@ The knowledge base (`src/data/knowledge_base/support_articles.json`) contains ar
 - Technical Requirements
 
 You can extend the knowledge base by adding new articles to the JSON file.
+
+
+# Once You've Installed Everything
+
+```bash
+source venv/bin/activate && python src/app.py
+```

@@ -1,39 +1,82 @@
 {
-  "articles": [
+  "support_tickets": [
     {
-      "id": "net-001",
-      "title": "Network Connectivity Issues",
-      "content": "Common solutions for network connectivity problems:\n1. Check if your router is powered on and connected\n2. Verify your network cables are properly connected\n3. Try restarting your modem and router\n4. Ensure your WiFi is enabled on your device\n5. Contact your ISP if issues persist",
-      "category": "networking",
-      "tags": ["connectivity", "internet", "troubleshooting"]
+      "ticket_id": "TCK-001",
+      "subject": "Connectivity Issues with IoT Devices in ICU",
+      "customer": "City Hospital",
+      "status": "open",
+      "priority": "high",
+      "conversation": [
+        {
+          "from": "customer",
+          "message": "We're experiencing intermittent connectivity with our patient monitoring devices in the ICU. This is critical for real-time monitoring."
+        },
+        {
+          "from": "representative",
+          "message": "We're sorry to hear that. Can you confirm if all devices are affected or just specific ones? Also, are you using our 5G network for these devices?"
+        },
+        {
+          "from": "customer",
+          "message": "It seems to be affecting only some devices. Yes, we're using the 5G network, which was recommended for its low latency."
+        },
+        {
+          "from": "representative",
+          "message": "Thank you for the information. We'll analyze the network traffic and get back to you with our findings. In the meantime, please ensure all devices have the latest firmware updates."
+        }
+      ],
+      "tags": ["connectivity", "IoT", "5G", "critical-care"]
     },
     {
-      "id": "bill-001",
-      "title": "Billing and Payments",
-      "content": "Information about billing cycles and payment methods:\n- Monthly billing cycle starts on the 1st\n- We accept credit cards, PayPal, and bank transfers\n- Late payments incur a 5% fee\n- Contact billing@example.com for invoice questions\n- Early termination fee may apply",
-      "category": "billing",
-      "tags": ["payments", "invoices", "fees"]
+      "ticket_id": "TCK-002",
+      "subject": "Setting Up New IoT Devices in Radiology",
+      "customer": "Green Valley Medical Center",
+      "status": "resolved",
+      "priority": "medium",
+      "conversation": [
+        {
+          "from": "customer",
+          "message": "We have recently procured new imaging devices that require integration with the existing network. Can you assist with the setup?"
+        },
+        {
+          "from": "representative",
+          "message": "Certainly! Are these devices compatible with our 5G IoT platform, or do they need additional configuration?"
+        },
+        {
+          "from": "customer",
+          "message": "They are compatible but require configuration for secure data transmission."
+        },
+        {
+          "from": "representative",
+          "message": "Understood. We'll schedule a technician to assist with the setup and ensure secure data transmission over 5G."
+        }
+      ],
+      "tags": ["setup", "IoT", "radiology", "5G", "security"]
     },
     {
-      "id": "acc-001",
-      "title": "Account Management",
-      "content": "How to manage your account settings:\n1. Log in to your dashboard at account.example.com\n2. Click on 'Settings' in the top right\n3. Update your profile information\n4. Change password or enable 2FA\n5. Manage notification preferences",
-      "category": "account",
-      "tags": ["settings", "profile", "security"]
-    },
-    {
-      "id": "prod-001",
-      "title": "Product Features",
-      "content": "Overview of our main product features:\n- Real-time data synchronization\n- Cloud backup and storage\n- Multi-device support\n- Advanced security features\n- 24/7 system monitoring",
-      "category": "product",
-      "tags": ["features", "overview", "capabilities"]
-    },
-    {
-      "id": "tech-001",
-      "title": "Technical Requirements",
-      "content": "System requirements for optimal performance:\n- Minimum 8GB RAM\n- 100GB free disk space\n- Modern web browser (Chrome, Firefox, Safari)\n- Stable internet connection (10Mbps+)\n- Operating System: Windows 10+, macOS 10.15+, or Ubuntu 20.04+",
-      "category": "technical",
-      "tags": ["requirements", "specs", "compatibility"]
+      "ticket_id": "TCK-003",
+      "subject": "Data Usage Inquiry for Mobile Health Units",
+      "customer": "Rural Health Outreach Program",
+      "status": "closed",
+      "priority": "low",
+      "conversation": [
+        {
+          "from": "customer",
+          "message": "We need details on our data usage for the mobile health units deployed in rural areas."
+        },
+        {
+          "from": "representative",
+          "message": "I can help with that. Our analytics show high data usage during remote consultations. Would you like us to optimize the data plan for these units?"
+        },
+        {
+          "from": "customer",
+          "message": "Yes, please. Cost efficiency is crucial for us."
+        },
+        {
+          "from": "representative",
+          "message": "We've optimized the plan to reduce costs while maintaining necessary bandwidth for telemedicine services. Please review the new plan and let us know if it meets your needs."
+        }
+      ],
+      "tags": ["data-usage", "mobile-units", "telemedicine", "cost-optimization"]
     }
   ]
 }
