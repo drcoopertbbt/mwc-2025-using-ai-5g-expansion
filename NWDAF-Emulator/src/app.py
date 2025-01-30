@@ -30,7 +30,8 @@ logger = logging.getLogger(__name__)
 sys.stdout.flush()
 sys.stderr.flush()
 
-print("=== NWDAF Emulator Starting ===")
+print("=== NWDAF Analytics System Starting ===")
+print("Loading Network Analytics Data")
 print("Logging Level: DEBUG")
 print("Console Output: Enabled")
 print("================================")
@@ -41,7 +42,7 @@ logger.info("Environment variables loaded")
 print("API Key loaded from .env file")
 
 def load_knowledge_base():
-    kb_path = os.path.join(os.path.dirname(__file__), 'data/knowledge_base/support_articles.json')
+    kb_path = os.path.join(os.path.dirname(__file__), 'data/NWDAF_Data/NWDAF_data.json')
     with open(kb_path, 'r') as f:
         return json.load(f)
 
@@ -65,7 +66,7 @@ class APILogger:
         logger.info("Content-Type: application/json")
         logger.info("Authorization: Bearer nvapi-***")
         logger.info("Accept: application/json")
-        logger.info("User-Agent: MWC-NWDAF-Emulator/1.0")
+        logger.info("User-Agent: MWC-NWDAF-Analytics/1.0")
         logger.info("Connection: keep-alive")
         logger.info("========================")
 
@@ -91,24 +92,34 @@ def generate_ai_response(prompt, context):
             raise Exception("NVIDIA_API_KEY environment variable is not set")
         base_url = "https://integrate.api.nvidia.com/v1"
         
-        system_message = """You are a Network Data Analytics Function (NWDAF) AI assistant with analytical capabilities. 
-        When responding to queries:
-        1. Use the provided context to analyze network data and patterns
-        2. Identify potential network issues and anomalies
-        3. Provide insights on network performance and optimization
-        4. Conclude responses with a brief summary section that highlights:
-           - Key patterns or trends identified
-           - Notable network insights
-           - Potential areas for improvement
-           - Recommendations based on the analysis
-        
-        If the context doesn't contain relevant information, politely explain that and offer to help with related network analytics topics.
-        
-        Format your responses using Markdown for better readability, including:
+        system_message = """You are a Network Data Analytics Function (NWDAF) AI assistant specializing in 5G network analytics. 
+        When analyzing network data:
+        1. Focus on vertical-specific patterns (healthcare, consumer, industrial, smart city)
+        2. Analyze network performance metrics:
+           - Latency and reliability requirements
+           - Throughput and bandwidth utilization
+           - Connection density and device distribution
+        3. Evaluate network slicing effectiveness:
+           - eMBB (Enhanced Mobile Broadband)
+           - URLLC (Ultra-Reliable Low-Latency Communications)
+           - mMTC (Massive Machine Type Communications)
+        4. Identify optimization opportunities:
+           - Areas needing capacity expansion
+           - Service quality improvements
+           - Vertical-specific enhancements
+        5. Conclude with actionable insights:
+           - Key performance indicators
+           - Growth trends by vertical
+           - Specific recommendations for network optimization
+           - Potential 5G expansion opportunities
+
+        Format responses using Markdown for clarity:
         - Headers for different sections
-        - Lists for multiple points
-        - Bold/italic for emphasis
-        - Code blocks for technical details"""
+        - Tables for metric comparisons
+        - Lists for recommendations
+        - Bold/italic for important insights
+        
+        If asked about specific metrics or patterns not in the context, explain what data would be needed for a complete analysis."""
         
         headers = {
             "Content-Type": "application/json",
@@ -184,13 +195,13 @@ os.makedirs(os.path.join(data_dir, 'rag-database'), exist_ok=True)
 @app.route('/ask', methods=['POST'])
 def ask():
     try:
-        print("\n=== New Request Received ===")
+        print("\n=== New Network Analytics Request ===")
         logger.info("Received /ask request")
         sys.stdout.flush()
         
         # Extract prompt from the incoming request
         prompt_data = request.json.get('prompt', '')
-        logger.info(f"Processing prompt: {prompt_data}")
+        logger.info(f"Processing analytics query: {prompt_data}")
         print(f"User Query: {prompt_data}")
         sys.stdout.flush()
         
@@ -200,15 +211,15 @@ def ask():
         with open(prompt_path, 'w') as f:
             json.dump({'prompt': prompt_data}, f, indent=2)
 
-        # Load entire knowledge base as context
+        # Load NWDAF data as context
         kb_data = load_knowledge_base()
-        context = "Here is our complete knowledge base:\n\n" + json.dumps(kb_data, indent=2)
+        context = "Here is our current NWDAF analytics data:\n\n" + json.dumps(kb_data, indent=2)
             
-        logger.info("Context prepared, initiating response generation")
+        logger.info("Network data loaded, initiating analysis")
 
         def generate():
             try:
-                print("\n=== Starting API Interaction ===")
+                print("\n=== Starting Network Analysis ===")
                 sys.stdout.flush()
                 
                 response = generate_ai_response(prompt_data, context)
@@ -217,7 +228,7 @@ def ask():
                 
                 chunk_count = 0
                 total_chars = 0
-                print("Streaming response from NVIDIA API...")
+                print("Streaming analysis from NVIDIA API...")
                 sys.stdout.flush()
                 start_time = datetime.now()
 
@@ -281,11 +292,11 @@ def ask():
                 
                 end_time = datetime.now()
                 duration = (end_time - start_time).total_seconds()
-                logger.info("=== Streaming Complete ===")
+                logger.info("=== Analysis Complete ===")
                 logger.info(f"Total chunks: {chunk_count}")
                 logger.info(f"Total characters: {total_chars}")
-                logger.info(f"Duration: {duration:.2f} seconds")
-                logger.info(f"Average speed: {total_chars/duration:.2f} chars/second")
+                logger.info(f"Analysis duration: {duration:.2f} seconds")
+                logger.info(f"Processing speed: {total_chars/duration:.2f} chars/second")
                 logger.info("========================")
                 
                 # Save the complete response

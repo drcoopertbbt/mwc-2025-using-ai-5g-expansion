@@ -40,9 +40,9 @@ load_dotenv()
 logger.info("Environment variables loaded")
 print("API Key loaded from .env file")
 
-def load_knowledge_base():
-    kb_path = os.path.join(os.path.dirname(__file__), 'data/knowledge_base/support_articles.json')
-    with open(kb_path, 'r') as f:
+def load_industry_data():
+    data_path = os.path.join(os.path.dirname(__file__), 'data/industry-data/industry_data.json')
+    with open(data_path, 'r') as f:
         return json.load(f)
 
 class APILogger:
@@ -91,24 +91,32 @@ def generate_ai_response(prompt, context):
             raise Exception("NVIDIA_API_KEY environment variable is not set")
         base_url = "https://integrate.api.nvidia.com/v1"
         
-        system_message = """You are an Industry Report Analysis AI assistant with analytical capabilities. 
+        system_message = """You are an Industry Report Analysis AI assistant specializing in 5G and healthcare technology trends. 
         When responding to queries:
-        1. Use the provided context to analyze industry trends and patterns
-        2. Identify key market insights and opportunities
-        3. Provide data-driven analysis and recommendations
-        4. Conclude responses with a brief summary section that highlights:
-           - Key trends and patterns identified
-           - Notable market insights
-           - Potential opportunities
-           - Strategic recommendations based on the analysis
+        1. Analyze industry reports to identify key trends, market valuations, and growth projections
+        2. Focus on technological convergence between 5G, AI, and healthcare applications
+        3. Highlight implementation challenges, risk factors, and mitigation strategies
+        4. Evaluate market opportunities and strategic considerations
+        5. Provide data-driven insights using specific metrics from the reports
         
-        If the context doesn't contain relevant information, politely explain that and offer to help with related industry analysis topics.
+        Structure your responses to include:
+        - Market Overview: Current state and projections
+        - Key Technologies: Focus areas and innovations
+        - Implementation Analysis: Challenges and solutions
+        - Strategic Insights: Opportunities and recommendations
         
-        Format your responses using Markdown for better readability, including:
-        - Headers for different sections
-        - Lists for multiple points
-        - Bold/italic for emphasis
-        - Code blocks for technical details or data"""
+        Conclude with a summary highlighting:
+        - Critical market metrics and growth indicators
+        - Key technological trends and their impact
+        - Primary challenges and mitigation strategies
+        - Strategic recommendations for stakeholders
+        
+        Format responses using Markdown for clarity:
+        - Use headers (##) for main sections
+        - Bullet points for lists
+        - **Bold** for important metrics/figures
+        - `Code blocks` for technical specifications
+        - > Blockquotes for direct insights from reports"""
         
         headers = {
             "Content-Type": "application/json",
@@ -200,9 +208,39 @@ def ask():
         with open(prompt_path, 'w') as f:
             json.dump({'prompt': prompt_data}, f, indent=2)
 
-        # Load entire knowledge base as context
-        kb_data = load_knowledge_base()
-        context = "Here is our complete knowledge base:\n\n" + json.dumps(kb_data, indent=2)
+        # Load and structure industry data as context
+        industry_data = load_industry_data()
+        
+        # Format the context in a more structured way
+        context = "Here is our industry report data:\n\n"
+        for report in industry_data['industry_reports']:
+            context += f"Report: {report['title']}\n"
+            context += f"ID: {report['report_id']}\n"
+            context += f"Sector: {report['sector']}\n"
+            context += f"Date: {report['date']}\n\n"
+            
+            context += "Key Findings:\n"
+            for finding in report['key_findings']:
+                context += f"- Category: {finding['category']}\n"
+                if 'data' in finding:
+                    for key, value in finding['data'].items():
+                        if isinstance(value, list):
+                            context += f"  {key}:\n"
+                            for item in value:
+                                context += f"    - {item}\n"
+                        else:
+                            context += f"  {key}: {value}\n"
+                context += f"  Analysis: {finding['analysis']}\n\n"
+            
+            context += "Trends:\n"
+            for trend in report['trends']:
+                context += f"- {trend['name']} (Impact: {trend['impact']})\n"
+                context += f"  {trend['description']}\n"
+            
+            context += f"\nSource: {report['source']['url']}\n"
+            context += f"Published: {report['source']['published_date']}\n"
+            context += f"Tags: {', '.join(report['tags'])}\n\n"
+            context += "---\n\n"
             
         logger.info("Context prepared, initiating response generation")
 

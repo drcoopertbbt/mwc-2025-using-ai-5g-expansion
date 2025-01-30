@@ -56,7 +56,7 @@ You can test the system with queries related to:
 - Device connectivity patterns
 - Network optimization recommendations
 
-Example query: "What's the current load on the eMBB slice?"
+Example query: "Can you summarize the NWDAF network analytics and recommend any 5G expansion opportunities according to trends you see in the data?"
 
 ## Data Storage
 

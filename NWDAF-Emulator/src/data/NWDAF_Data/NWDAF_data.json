@@ -1,0 +1,241 @@
+{
+  "network_analytics": [
+    {
+      "ticket_id": "NW-001",
+      "subject": "5G Network Load Analysis",
+      "network_slice": "eMBB-Slice-001",
+      "status": "active",
+      "priority": "high",
+      "metrics": [
+        {
+          "type": "load",
+          "value": "85%",
+          "timestamp": "2025-01-29T10:15:00Z",
+          "location": "Cell-Site-A"
+        },
+        {
+          "type": "latency",
+          "value": "12ms",
+          "timestamp": "2025-01-29T10:15:00Z",
+          "location": "Cell-Site-A"
+        }
+      ],
+      "analysis": [
+        {
+          "pattern": "peak_usage",
+          "observation": "High network load during business hours indicates potential capacity issues"
+        },
+        {
+          "pattern": "performance",
+          "observation": "Latency remains within acceptable range despite high load"
+        }
+      ],
+      "tags": ["5G", "network-load", "eMBB", "performance"]
+    },
+    {
+      "ticket_id": "NW-002",
+      "subject": "URLLC Slice Performance",
+      "network_slice": "URLLC-Slice-001",
+      "status": "active",
+      "priority": "critical",
+      "metrics": [
+        {
+          "type": "reliability",
+          "value": "99.999%",
+          "timestamp": "2025-01-29T10:15:00Z",
+          "location": "Industrial-Zone-B"
+        },
+        {
+          "type": "latency",
+          "value": "1ms",
+          "timestamp": "2025-01-29T10:15:00Z",
+          "location": "Industrial-Zone-B"
+        }
+      ],
+      "analysis": [
+        {
+          "pattern": "reliability",
+          "observation": "Meeting URLLC requirements for industrial automation"
+        },
+        {
+          "pattern": "latency",
+          "observation": "Ultra-low latency maintained for critical applications"
+        }
+      ],
+      "tags": ["5G", "URLLC", "industrial", "reliability"]
+    },
+    {
+      "ticket_id": "NW-003",
+      "subject": "mMTC Device Connectivity",
+      "network_slice": "mMTC-Slice-001",
+      "status": "active",
+      "priority": "medium",
+      "metrics": [
+        {
+          "type": "connected_devices",
+          "value": "50000",
+          "timestamp": "2025-01-29T10:15:00Z",
+          "location": "Smart-City-Zone"
+        },
+        {
+          "type": "connection_density",
+          "value": "1000/km2",
+          "timestamp": "2025-01-29T10:15:00Z",
+          "location": "Smart-City-Zone"
+        }
+      ],
+      "analysis": [
+        {
+          "pattern": "density",
+          "observation": "High device density in smart city deployment"
+        },
+        {
+          "pattern": "efficiency",
+          "observation": "Network efficiently handling massive IoT connections"
+        }
+      ],
+      "tags": ["5G", "mMTC", "IoT", "smart-city"]
+    },
+    {
+      "ticket_id": "NW-004",
+      "subject": "Healthcare Service Analytics",
+      "network_slice": "URLLC-Healthcare-001",
+      "vertical": "healthcare",
+      "service_id": "remote_surgery",
+      "segment": "ultra_reliable_low_latency",
+      "status": "active",
+      "priority": "critical",
+      "metrics": [
+        {
+          "type": "latency",
+          "value": "2ms",
+          "timestamp": "2025-01-30T06:45:00Z",
+          "location": "Hospital-Zone-A"
+        },
+        {
+          "type": "reliability",
+          "value": "99.999%",
+          "timestamp": "2025-01-30T06:45:00Z",
+          "location": "Hospital-Zone-A"
+        },
+        {
+          "type": "throughput",
+          "value": "850Mbps",
+          "timestamp": "2025-01-30T06:45:00Z",
+          "location": "Hospital-Zone-A"
+        },
+        {
+          "type": "connection_density",
+          "value": "500/km2",
+          "timestamp": "2025-01-30T06:45:00Z",
+          "location": "Hospital-Zone-A"
+        }
+      ],
+      "analysis": [
+        {
+          "pattern": "growth",
+          "observation": "Increasing demand for remote surgery applications"
+        },
+        {
+          "pattern": "performance",
+          "observation": "Meeting critical healthcare requirements with URLLC slice"
+        }
+      ],
+      "tags": ["5G", "healthcare", "URLLC", "remote-surgery"]
+    },
+    {
+      "ticket_id": "NW-005",
+      "subject": "Consumer Services Analysis",
+      "network_slice": "eMBB-Consumer-001",
+      "vertical": "consumer",
+      "service_id": "video_streaming",
+      "segment": "enhanced_mobile_broadband",
+      "status": "active",
+      "priority": "medium",
+      "metrics": [
+        {
+          "type": "latency",
+          "value": "15ms",
+          "timestamp": "2025-01-30T06:45:00Z",
+          "location": "Urban-Zone-C"
+        },
+        {
+          "type": "throughput",
+          "value": "950Mbps",
+          "timestamp": "2025-01-30T06:45:00Z",
+          "location": "Urban-Zone-C"
+        },
+        {
+          "type": "reliability",
+          "value": "99.95%",
+          "timestamp": "2025-01-30T06:45:00Z",
+          "location": "Urban-Zone-C"
+        },
+        {
+          "type": "connection_density",
+          "value": "800/km2",
+          "timestamp": "2025-01-30T06:45:00Z",
+          "location": "Urban-Zone-C"
+        }
+      ],
+      "analysis": [
+        {
+          "pattern": "usage",
+          "observation": "High bandwidth consumption from video streaming services"
+        },
+        {
+          "pattern": "trend",
+          "observation": "Stable performance with current eMBB slice configuration"
+        }
+      ],
+      "tags": ["5G", "consumer", "eMBB", "streaming"]
+    },
+    {
+      "ticket_id": "NW-006",
+      "subject": "Industrial IoT Analytics",
+      "network_slice": "mMTC-Industrial-001",
+      "vertical": "industrial",
+      "service_id": "sensor_networks",
+      "segment": "massive_machine_type",
+      "status": "active",
+      "priority": "high",
+      "metrics": [
+        {
+          "type": "latency",
+          "value": "10ms",
+          "timestamp": "2025-01-30T06:45:00Z",
+          "location": "Factory-Zone-D"
+        },
+        {
+          "type": "throughput",
+          "value": "500Mbps",
+          "timestamp": "2025-01-30T06:45:00Z",
+          "location": "Factory-Zone-D"
+        },
+        {
+          "type": "reliability",
+          "value": "99.98%",
+          "timestamp": "2025-01-30T06:45:00Z",
+          "location": "Factory-Zone-D"
+        },
+        {
+          "type": "connection_density",
+          "value": "950/km2",
+          "timestamp": "2025-01-30T06:45:00Z",
+          "location": "Factory-Zone-D"
+        }
+      ],
+      "analysis": [
+        {
+          "pattern": "density",
+          "observation": "High sensor density requiring mMTC optimization"
+        },
+        {
+          "pattern": "efficiency",
+          "observation": "Efficient handling of multiple concurrent connections"
+        }
+      ],
+      "tags": ["5G", "industrial", "mMTC", "IoT"]
+    }
+  ]
+}
