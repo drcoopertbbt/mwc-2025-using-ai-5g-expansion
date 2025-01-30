@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NWDAF Network Analytics</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+
+        .header {
+            background-color: #1a73e8;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .analytics-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .metrics-container, .slices-container {
+            height: 600px;
+            overflow: hidden;
+            position: relative;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .metric {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            background-color: white;
+            transition: transform 0.5s ease;
+            opacity: 1;
+            margin-bottom: 10px;
+        }
+
+        .metric.new {
+            animation: slideIn 0.5s ease;
+        }
+
+        .metric.fade-out {
+            animation: fadeOut 0.5s ease forwards;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .vertical-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .vertical-healthcare {
+            background-color: #e8f5e9;
+            color: #1b5e20;
+            border-left: 4px solid #1b5e20;
+        }
+
+        .vertical-industrial {
+            background-color: #ede7f6;
+            color: #4527a0;
+            border-left: 4px solid #4527a0;
+        }
+
+        .vertical-consumer {
+            background-color: #e8eaf6;
+            color: #1a237e;
+            border-left: 4px solid #1a237e;
+        }
+
+        .vertical-smart_city {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            border-left: 4px solid #0d47a1;
+        }
+
+        .service-id {
+            color: #1a73e8;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .trend-indicator {
+            font-size: 0.8em;
+            margin-left: 8px;
+        }
+
+        .trend-increasing {
+            color: #d93025;
+            animation: pulse 1.5s infinite;
+        }
+
+        .trend-stable {
+            color: #188038;
+        }
+
+        .expansion-opportunity {
+            background-color: #fef7e0;
+            border-left: 4px solid #f29900;
+            padding: 8px;
+            margin-top: 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .metric-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .metric-value {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .performance-metrics {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .performance-metric {
+            text-align: center;
+        }
+
+        .performance-label {
+            font-size: 0.8em;
+            color: #5f6368;
+            margin-bottom: 4px;
+        }
+
+        .slice-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .slice-header {
+            font-weight: bold;
+            color: #1a73e8;
+            margin-bottom: 10px;
+        }
+
+        .slice-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #d93025;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>NWDAF Network Analytics</h1>
+        <div class="live-indicator">
+            <div class="live-dot"></div>
+            <span>LIVE</span>
+        </div>
+    </div>
+
+    <div class="analytics-container">
+        <div class="metrics-container" id="metricsContainer">
+            <h2>Real-time Metrics</h2>
+            <!-- Dynamic metrics will be inserted here -->
+        </div>
+
+        <div class="slices-container">
+            <h2>Network Slices</h2>
+            <div id="slicesContainer">
+                <!-- Network slices will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const nwdafData = JSON.parse('{{ nwdaf_data|tojson|safe }}');
+        const networkSlices = JSON.parse('{{ network_slices|tojson|safe }}');
+        let currentIndex = 0;
+        const metricsContainer = document.getElementById('metricsContainer');
+        const slicesContainer = document.getElementById('slicesContainer');
+        const maxDisplayedMetrics = 5;
+        let displayedMetrics = [];
+
+        function createMetricElement(metric) {
+            const metricDiv = document.createElement('div');
+            metricDiv.className = 'metric new';
+            metricDiv.innerHTML = `
+                <div class="metric-header">
+                    <div>
+                        <span class="vertical-badge vertical-${metric.vertical}">${metric.vertical.toUpperCase()}</span>
+                        <span class="service-id">${metric.service_id}</span>
+                    </div>
+                    <div>
+                        <span class="trend-indicator trend-${metric.trend}">
+                            ${metric.trend === 'increasing' ? '↑ High Growth' : '→ Stable'}
+                        </span>
+                    </div>
+                </div>
+                <div class="metric-details">
+                    <div>
+                        <div>Network Segment</div>
+                        <div class="metric-value">${metric.segment.replace(/_/g, ' ').toUpperCase()}</div>
+                    </div>
+                    <div>
+                        <div>Traffic Pattern</div>
+                        <div class="metric-value ${metric.trend === 'increasing' ? 'trend-increasing' : 'trend-stable'}">
+                            ${metric.trend === 'increasing' ? 'High Growth' : 'Normal'}
+                        </div>
+                    </div>
+                    <div>
+                        <div>Last Update</div>
+                        <div class="metric-value">${new Date(metric.timestamp).toLocaleTimeString()}</div>
+                    </div>
+                </div>
+                <div class="performance-metrics">
+                    <div class="performance-metric">
+                        <div class="performance-label">Latency</div>
+                        <div class="metric-value">${metric.metrics.latency} ms</div>
+                    </div>
+                    <div class="performance-metric">
+                        <div class="performance-label">Throughput</div>
+                        <div class="metric-value">${metric.metrics.throughput} Mbps</div>
+                    </div>
+                    <div class="performance-metric">
+                        <div class="performance-label">Reliability</div>
+                        <div class="metric-value">${metric.metrics.reliability}%</div>
+                    </div>
+                    <div class="performance-metric">
+                        <div class="performance-label">Connection Density</div>
+                        <div class="metric-value">${metric.metrics.connection_density}/km2</div>
+                    </div>
+                </div>
+                ${metric.vertical === 'healthcare' && metric.trend === 'increasing' ? `
+                    <div class="expansion-opportunity">
+                        <strong>5G Expansion Opportunity:</strong> High healthcare traffic growth with ${metric.metrics.latency}ms latency and ${metric.metrics.reliability}% reliability indicates potential for dedicated URLLC slice optimization
+                    </div>
+                ` : ''}
+            `;
+            return metricDiv;
+        }
+
+        function updateMetrics() {
+            const newMetric = nwdafData[currentIndex];
+            const metricElement = createMetricElement(newMetric);
+            
+            if (displayedMetrics.length >= maxDisplayedMetrics) {
+                const oldestMetric = displayedMetrics.shift();
+                oldestMetric.classList.add('fade-out');
+                setTimeout(() => {
+                    oldestMetric.remove();
+                }, 500);
+            }
+
+            metricsContainer.appendChild(metricElement);
+            displayedMetrics.push(metricElement);
+            
+            currentIndex = (currentIndex + 1) % nwdafData.length;
+        }
+
+        function displayNetworkSlices() {
+            networkSlices.forEach(slice => {
+                const sliceDiv = document.createElement('div');
+                sliceDiv.className = 'slice-card';
+                sliceDiv.innerHTML = `
+                    <div class="slice-header">${slice.subject}</div>
+                    <div class="slice-metrics">
+                        ${slice.metrics.map(metric => `
+                            <div>
+                                <strong>${metric.type}:</strong> ${metric.value}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                slicesContainer.appendChild(sliceDiv);
+            });
+        }
+
+        // Initial display
+        for (let i = 0; i < Math.min(maxDisplayedMetrics, nwdafData.length); i++) {
+            updateMetrics();
+        }
+        displayNetworkSlices();
+
+        // Update metrics every 3 seconds
+        setInterval(updateMetrics, 3000);
+    </script>
+</body>
+</html>

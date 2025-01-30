@@ -59,7 +59,7 @@ You can test the system with queries related to:
 - Product features
 - Technical requirements
 
-Example query: "How do I fix network connectivity issues?"
+Example query: "Can you summarize trends that we are seeing from our customer support tickets?"
 
 ## Data Storage
 
