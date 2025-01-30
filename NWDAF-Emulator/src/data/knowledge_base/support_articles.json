@@ -1,0 +1,100 @@
+{
+  "network_analytics": [
+    {
+      "ticket_id": "NW-001",
+      "subject": "5G Network Load Analysis",
+      "network_slice": "eMBB-Slice-001",
+      "status": "active",
+      "priority": "high",
+      "metrics": [
+        {
+          "type": "load",
+          "value": "85%",
+          "timestamp": "2025-01-29T10:15:00Z",
+          "location": "Cell-Site-A"
+        },
+        {
+          "type": "latency",
+          "value": "12ms",
+          "timestamp": "2025-01-29T10:15:00Z",
+          "location": "Cell-Site-A"
+        }
+      ],
+      "analysis": [
+        {
+          "pattern": "peak_usage",
+          "observation": "High network load during business hours indicates potential capacity issues"
+        },
+        {
+          "pattern": "performance",
+          "observation": "Latency remains within acceptable range despite high load"
+        }
+      ],
+      "tags": ["5G", "network-load", "eMBB", "performance"]
+    },
+    {
+      "ticket_id": "NW-002",
+      "subject": "URLLC Slice Performance",
+      "network_slice": "URLLC-Slice-001",
+      "status": "active",
+      "priority": "critical",
+      "metrics": [
+        {
+          "type": "reliability",
+          "value": "99.999%",
+          "timestamp": "2025-01-29T10:15:00Z",
+          "location": "Industrial-Zone-B"
+        },
+        {
+          "type": "latency",
+          "value": "1ms",
+          "timestamp": "2025-01-29T10:15:00Z",
+          "location": "Industrial-Zone-B"
+        }
+      ],
+      "analysis": [
+        {
+          "pattern": "reliability",
+          "observation": "Meeting URLLC requirements for industrial automation"
+        },
+        {
+          "pattern": "latency",
+          "observation": "Ultra-low latency maintained for critical applications"
+        }
+      ],
+      "tags": ["5G", "URLLC", "industrial", "reliability"]
+    },
+    {
+      "ticket_id": "NW-003",
+      "subject": "mMTC Device Connectivity",
+      "network_slice": "mMTC-Slice-001",
+      "status": "active",
+      "priority": "medium",
+      "metrics": [
+        {
+          "type": "connected_devices",
+          "value": "50000",
+          "timestamp": "2025-01-29T10:15:00Z",
+          "location": "Smart-City-Zone"
+        },
+        {
+          "type": "connection_density",
+          "value": "1000/km2",
+          "timestamp": "2025-01-29T10:15:00Z",
+          "location": "Smart-City-Zone"
+        }
+      ],
+      "analysis": [
+        {
+          "pattern": "density",
+          "observation": "High device density in smart city deployment"
+        },
+        {
+          "pattern": "efficiency",
+          "observation": "Network efficiently handling massive IoT connections"
+        }
+      ],
+      "tags": ["5G", "mMTC", "IoT", "smart-city"]
+    }
+  ]
+}

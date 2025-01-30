@@ -1,0 +1,130 @@
+{
+  "industry_reports": [
+    {
+      "report_id": "IR-001",
+      "title": "5G Network Infrastructure Market Analysis",
+      "sector": "Telecommunications",
+      "date": "2025-01-15",
+      "key_findings": [
+        {
+          "category": "market_size",
+          "data": {
+            "value": "$47.3B",
+            "growth": "22.7% YoY",
+            "forecast_2026": "$89.5B"
+          },
+          "analysis": "Strong growth driven by enterprise 5G adoption and network modernization"
+        },
+        {
+          "category": "market_segments",
+          "data": {
+            "RAN": "38%",
+            "Core Network": "29%",
+            "Transport Network": "33%"
+          },
+          "analysis": "RAN segment leads due to massive MIMO deployments and Open RAN initiatives"
+        }
+      ],
+      "trends": [
+        {
+          "name": "Open RAN Adoption",
+          "impact": "high",
+          "description": "Increasing operator interest in Open RAN solutions for network flexibility"
+        },
+        {
+          "name": "Network Slicing",
+          "impact": "medium",
+          "description": "Growing demand for customized network services across industries"
+        }
+      ],
+      "tags": ["5G", "infrastructure", "telecommunications", "market-analysis"]
+    },
+    {
+      "report_id": "IR-002",
+      "title": "Enterprise 5G Solutions Market",
+      "sector": "Enterprise Technology",
+      "date": "2025-01-20",
+      "key_findings": [
+        {
+          "category": "adoption_rate",
+          "data": {
+            "current": "27%",
+            "yoy_growth": "15%",
+            "leading_sectors": ["Manufacturing", "Healthcare", "Retail"]
+          },
+          "analysis": "Manufacturing leads adoption with Industry 4.0 initiatives"
+        },
+        {
+          "category": "investment_trends",
+          "data": {
+            "total_investment": "$12.8B",
+            "top_areas": {
+              "private_networks": "45%",
+              "edge_computing": "30%",
+              "application_development": "25%"
+            }
+          },
+          "analysis": "Private networks dominate enterprise 5G investments"
+        }
+      ],
+      "trends": [
+        {
+          "name": "Edge Computing Integration",
+          "impact": "high",
+          "description": "Rising demand for low-latency processing at network edge"
+        },
+        {
+          "name": "Industry-Specific Solutions",
+          "impact": "high",
+          "description": "Growth in customized 5G solutions for vertical industries"
+        }
+      ],
+      "tags": ["enterprise", "5G", "private-networks", "edge-computing"]
+    },
+    {
+      "report_id": "IR-003",
+      "title": "5G IoT Market Landscape",
+      "sector": "IoT",
+      "date": "2025-01-25",
+      "key_findings": [
+        {
+          "category": "device_connections",
+          "data": {
+            "total_connections": "2.1B",
+            "growth_rate": "45% YoY",
+            "connection_types": {
+              "massive_IoT": "75%",
+              "critical_IoT": "25%"
+            }
+          },
+          "analysis": "Massive IoT dominates connection volume while critical IoT drives revenue"
+        },
+        {
+          "category": "revenue_analysis",
+          "data": {
+            "total_revenue": "$15.6B",
+            "segment_breakdown": {
+              "hardware": "40%",
+              "connectivity": "35%",
+              "services": "25%"
+            }
+          },
+          "analysis": "Hardware remains largest revenue segment due to device proliferation"
+        }
+      ],
+      "trends": [
+        {
+          "name": "AI/ML Integration",
+          "impact": "high",
+          "description": "Growing integration of AI for IoT data analytics"
+        },
+        {
+          "name": "Security Solutions",
+          "impact": "high",
+          "description": "Increased focus on IoT security and device management"
+        }
+      ],
+      "tags": ["IoT", "5G", "connectivity", "market-analysis"]
+    }
+  ]
+}
